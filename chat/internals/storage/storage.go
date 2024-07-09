@@ -43,7 +43,7 @@ func (storage *Storage) CreateUser(login domain.LoginType) {
 	storage.usersToDialogs[login] = []domain.DialogID{}
 }
 
-func (storage *Storage) userExist(login domain.LoginType) bool {
+func (storage *Storage) UserExist(login domain.LoginType) bool {
 	_, ok := storage.users[login]
 	return ok
 }

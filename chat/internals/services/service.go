@@ -12,7 +12,7 @@ type chatService struct {
 
 type storageInterface interface {
 	CreateUser(login domain.LoginType)
-	userExist(login domain.LoginType) bool
+	UserExist(login domain.LoginType) bool
 
 	GetAllChat() []domain.Message
 	PostAllChat(message domain.Message)
@@ -32,8 +32,8 @@ func (chatService *chatService) CreateUser(login domain.LoginType) {
 	chatService.storage.CreateUser(login)
 }
 
-func (chatService *chatService) userExist(login domain.LoginType) bool {
-	return chatService.storage.userExist(login)
+func (chatService *chatService) UserExist(login domain.LoginType) bool {
+	return chatService.storage.UserExist(login)
 }
 
 func (chatService *chatService) GetAllChat() []domain.Message {
