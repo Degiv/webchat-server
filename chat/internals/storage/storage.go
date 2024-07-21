@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"log/slog"
@@ -14,6 +15,7 @@ var (
 )
 
 type Storage struct {
+	database       *sql.DB
 	logger         slog.Logger
 	users          map[domain.LoginType]domain.User
 	allChat        []byte
@@ -22,8 +24,9 @@ type Storage struct {
 	storageMutex   sync.RWMutex
 }
 
-func NewChatStorage(logger slog.Logger) *Storage {
+func NewChatStorage(database *sql.DB, logger slog.Logger) *Storage {
 	return &Storage{
+		database:       database,
 		logger:         logger,
 		users:          make(map[domain.LoginType]domain.User),
 		allChat:        make([]byte, 0),
@@ -40,12 +43,12 @@ func (storage *Storage) GetAllChat() []domain.Message {
 
 func (storage *Storage) CreateUser(login domain.LoginType) {
 	storage.users[login] = domain.User{Login: login}
-	storage.usersToDialogs[login] = []domain.DialogID{}
+	storage.database.Exec("INSERT INTO users (login) VALUES (?)", login)
 }
 
 func (storage *Storage) UserExist(login domain.LoginType) bool {
-	_, ok := storage.users[login]
-	return ok
+	row := storage.database.QueryRow("SELECT * FROM users WHERE login = ?", login)
+	return row.Scan() == nil
 }
 
 func (storage *Storage) PostAllChat(message domain.Message) {

@@ -49,8 +49,8 @@ func (handler *ChatHandler) Routes() chi.Router {
 	r.Mount("/user", userRouter)
 	userRouter.Use(Auth)
 	userRouter.Post("/all", handler.PostAllChat)
-	userRouter.Get("/{id}/message", handler.GetPrivateChat)
-	userRouter.Post("/{id}/message", handler.PostPrivateChat)
+	userRouter.Get("/message", handler.GetPrivateChat)
+	userRouter.Post("/message", handler.PostPrivateChat)
 
 	return r
 }

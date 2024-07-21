@@ -1,7 +1,9 @@
 package main
 
 import (
+	"database/sql"
 	"github.com/go-chi/chi/v5"
+	_ "github.com/lib/pq"
 	"log/slog"
 	"net/http"
 	"webchat-server/chat/internals/handlers"
@@ -11,7 +13,10 @@ import (
 
 func main() {
 	logger := slog.Logger{}
-	chatStorage := storage.NewChatStorage(logger)
+	dsn := "postgres://postgres:postgres@localhost:5432/WebchatDB" + "?sslmode=disable"
+	database, _ := sql.Open("postgres", dsn)
+
+	chatStorage := storage.NewChatStorage(database, logger)
 
 	chatService := services.NewChatService(logger, chatStorage)
 
