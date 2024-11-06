@@ -1,6 +1,8 @@
 package domain
 
 type Message struct {
-	data        []byte
-	senderLogin LoginType
+	Id             int
+	UserLogin      string
+	ConversationId int
+	Text           string
 }

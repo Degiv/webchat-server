@@ -1,10 +1,10 @@
 package main
 
 import (
-	"database/sql"
 	"github.com/go-chi/chi/v5"
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"log/slog"
+	"log"
 	"net/http"
 	"webchat-server/chat/internals/handlers"
 	"webchat-server/chat/internals/services"
@@ -12,9 +12,16 @@ import (
 )
 
 func main() {
-	logger := slog.Logger{}
-	dsn := "postgres://postgres:postgres@localhost:5432/WebchatDB" + "?sslmode=disable"
-	database, _ := sql.Open("postgres", dsn)
+	//logger := slog.Logger{}
+
+	db, err := sqlx.Connect("postgres", "user=postgres dbname=WebchatDB sslmode=disable")
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	db.Ping()
+	MessagesDB := storage.NewMessages(db)
 
 	chatStorage := storage.NewChatStorage(database, logger)
 
